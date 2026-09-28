@@ -226,7 +226,6 @@ export function Globe({ globeConfig, data }: WorldProps) {
         startAnimation();
       }, 100);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [globeData, isAnimationStarted]);
 
   const startAnimation = () => {
@@ -342,7 +341,6 @@ export function Globe({ globeConfig, data }: WorldProps) {
     return () => {
       clearInterval(interval);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [globeRef.current, globeData]);
 
   // Prevent hydration mismatch by only rendering on client

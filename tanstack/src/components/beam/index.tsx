@@ -16,6 +16,12 @@ const Beam = ({
     const meteor = meteorRef.current;
 
     if (showBeam && meteor) {
+      const restartAnimation = () => {
+        meteor.style.animation = 'none';
+        void meteor.offsetWidth;
+        meteor.style.animation = '';
+      };
+
       const handleAnimationEnd = () => {
         meteor.style.visibility = 'hidden';
         const animationDelay = Math.floor(Math.random() * (2 - 0) + 0);
@@ -41,14 +47,6 @@ const Beam = ({
       };
     }
   }, [showBeam]);
-
-  const restartAnimation = () => {
-    const meteor = meteorRef.current;
-    if (!meteor) return;
-    meteor.style.animation = 'none';
-    void meteor.offsetWidth;
-    meteor.style.animation = '';
-  };
 
   if (!showBeam) return null;
 

@@ -1,5 +1,12 @@
 import { useRouter } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
+
+// Whether the page is framed never changes, so there is nothing to subscribe
+// to. The server snapshot reports "framed" so the banner stays hidden until
+// the client can check, rather than flashing inside the Strapi preview iframe.
+const subscribe = () => () => {};
+const getIsIframe = () => window !== window.top;
+const getServerIsIframe = () => true;
 
 /**
  * Draft mode exit banner.
@@ -11,11 +18,11 @@ import { useEffect, useState } from 'react';
 export function DraftModeBanner() {
   const router = useRouter();
   const [isExiting, setIsExiting] = useState(false);
-  const [isIframe, setIsIframe] = useState(true);
-
-  useEffect(() => {
-    setIsIframe(window !== window.top);
-  }, []);
+  const isIframe = useSyncExternalStore(
+    subscribe,
+    getIsIframe,
+    getServerIsIframe
+  );
 
   const handleExitDraft = async () => {
     setIsExiting(true);
