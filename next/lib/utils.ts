@@ -21,8 +21,11 @@ export const formatNumber = (
   }).format(number);
 };
 
-export const API_URL = process.env.NEXT_PUBLIC_API_URL ||
-      (globalThis.document?.location.host.endsWith('.strapidemo.com') ? `https://${document.location.host.replace('client-', 'api-')}` : '');
+export const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  (globalThis.document?.location.host.endsWith('.strapidemo.com')
+    ? `https://${document.location.host.replace('client-', 'api-')}`
+    : '');
 
 // Strapi's content source maps (sent in draft mode) append invisible stega
 // markers to every string so the admin preview can locate fields in the DOM.

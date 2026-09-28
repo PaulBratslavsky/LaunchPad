@@ -1,5 +1,3 @@
-import { API_URL, stripStegaMarkers } from '@/lib/utils';
-import { getStrapiSource } from '@/lib/strapi/sourceMap';
 import { unstable_noStore as noStore } from 'next/cache';
 import Image from 'next/image';
 import {
@@ -7,6 +5,9 @@ import {
   ComponentProps,
   VideoHTMLAttributes,
 } from 'react';
+
+import { getStrapiSource } from '@/lib/strapi/sourceMap';
+import { API_URL, stripStegaMarkers } from '@/lib/utils';
 
 interface StrapiMediaProps
   extends Omit<ComponentProps<typeof Image>, 'src' | 'alt'> {

@@ -15,11 +15,11 @@ placeholders and stop being development targets.
 
 The three ports are checked out locally, as siblings of this repository:
 
-| Framework | Local path | Origin |
-|---|---|---|
-| Astro | `../astro` | `PaulBratslavsky/astro-launchpad-strapi-port` |
-| Nuxt | `../nuxt` | `PaulBratslavsky/nuxt-launchpad-strapi-port` |
-| TanStack | `../tanstack` | `PaulBratslavsky/tanstack-launchpad-strapi-port` |
+| Framework | Local path    | Origin                                           |
+| --------- | ------------- | ------------------------------------------------ |
+| Astro     | `../astro`    | `PaulBratslavsky/astro-launchpad-strapi-port`    |
+| Nuxt      | `../nuxt`     | `PaulBratslavsky/nuxt-launchpad-strapi-port`     |
+| TanStack  | `../tanstack` | `PaulBratslavsky/tanstack-launchpad-strapi-port` |
 
 Each has the shape `client/` + `scripts/` + `launchpad.json` + a gitignored
 `strapi/` fetched from this repository. Only `client/` and parts of
@@ -71,18 +71,18 @@ fetching this repository's `strapi/` directory at a pinned commit. Inside
 this repository that is circular: the backend is a sibling directory. 1,786
 lines across the three ports collapse to roughly 300.
 
-| File | Lines (all 3) | Fate |
-|---|---|---|
-| `env.mts` | 654 | Survives as one shared `scripts/env.mts`. |
-| `fetch-backend.mts` | 319 | Deleted. The backend is a sibling. |
-| `setup.mts` | 187 | Collapses into the root `yarn setup`. |
-| `config.mts` | 163 | Deleted. `launchpad.json` pinning is moot. |
-| `dev.mts` | 153 | Deleted. Replaced by root scripts. |
-| `run.mts` | 142 | Deleted. Replaced by root scripts. |
-| `seed.mts` | 126 | Deleted. Duplicates the root `yarn seed`. |
-| `check-env.mts` | 42 | Collapses to one shared copy. |
-| **Total** | **1,786** | |
-| `launchpad.json`, root `package.json` | — | Deleted. |
+| File                                  | Lines (all 3) | Fate                                       |
+| ------------------------------------- | ------------- | ------------------------------------------ |
+| `env.mts`                             | 654           | Survives as one shared `scripts/env.mts`.  |
+| `fetch-backend.mts`                   | 319           | Deleted. The backend is a sibling.         |
+| `setup.mts`                           | 187           | Collapses into the root `yarn setup`.      |
+| `config.mts`                          | 163           | Deleted. `launchpad.json` pinning is moot. |
+| `dev.mts`                             | 153           | Deleted. Replaced by root scripts.         |
+| `run.mts`                             | 142           | Deleted. Replaced by root scripts.         |
+| `seed.mts`                            | 126           | Deleted. Duplicates the root `yarn seed`.  |
+| `check-env.mts`                       | 42            | Collapses to one shared copy.              |
+| **Total**                             | **1,786**     |                                            |
+| `launchpad.json`, root `package.json` | —             | Deleted.                                   |
 
 `env.mts` is the piece worth keeping. It provides `reconcilePreviewSecret()`,
 `reconcileClientUrl()`, `checkEnv()`, and `readEnvValue`/`writeEnvValue`. It is
@@ -132,11 +132,11 @@ return `${clientUrl}/api/preview?${urlSearchParams}`
 
 All four frontends already expose `/api/preview`:
 
-| Frontend | Route |
-|---|---|
-| Next | `next/app/api/preview/route.ts` |
-| Astro | `astro/src/pages/api/preview.ts` |
-| Nuxt | `nuxt/server/api/preview.get.ts` |
+| Frontend | Route                                 |
+| -------- | ------------------------------------- |
+| Next     | `next/app/api/preview/route.ts`       |
+| Astro    | `astro/src/pages/api/preview.ts`      |
+| Nuxt     | `nuxt/server/api/preview.get.ts`      |
 | TanStack | `tanstack/src/routes/api.preview.tsx` |
 
 So the hardcoded path needs no change. Only `clientUrl` is a problem, and

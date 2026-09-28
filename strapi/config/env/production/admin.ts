@@ -31,8 +31,8 @@ export default ({ env }) => {
     new Set(
       [clientUrl, ...env('PREVIEW_ALLOWED_ORIGINS', '').split(',')]
         .map((origin) => origin.trim())
-        .filter(Boolean),
-    ),
+        .filter(Boolean)
+    )
   );
   const previewSecret = env('PREVIEW_SECRET');
 
