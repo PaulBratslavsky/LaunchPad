@@ -45,7 +45,7 @@
       "yarn fix:format"
     ],
     "next/**/*.{js,jsx,ts,tsx}": [
-      "cd next && yarn lint --fix"
+      "yarn --cwd next eslint --fix"
     ]
   },
   "packageManager": "yarn@4.5.0"
