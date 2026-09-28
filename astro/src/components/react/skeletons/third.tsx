@@ -6,6 +6,8 @@ import { cn } from '../utils';
 export const SkeletonThree = () => {
   const [scope, animate] = useAnimate();
   const [animating, setAnimating] = useState(false);
+  // Picked once per mount so re-renders don't change the gradient's speed.
+  const [gradientDuration] = useState(() => Math.random() * (7 - 2) + 2);
   const enterAnimation = async () => {
     if (animating) return;
 
@@ -147,7 +149,7 @@ export const SkeletonThree = () => {
                 }}
                 id="gradient-3"
                 transition={{
-                  duration: Math.random() * (7 - 2) + 2,
+                  duration: gradientDuration,
                   ease: 'linear',
                   repeat: Infinity,
                 }}
