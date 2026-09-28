@@ -1,14 +1,14 @@
 'use client';
 
 import {
-  BlocksRenderer,
   type BlocksContent,
+  BlocksRenderer,
 } from '@strapi/blocks-react-renderer';
 import type { ComponentProps } from 'react';
 
 import { BlurImage } from './blur-image';
-import { normalizeStrapiMediaUrl, stripStegaMarkers } from '@/lib/utils';
 import { getStrapiSource } from '@/lib/strapi/sourceMap';
+import { normalizeStrapiMediaUrl, stripStegaMarkers } from '@/lib/utils';
 
 type BlockComponents = NonNullable<
   ComponentProps<typeof BlocksRenderer>['blocks']

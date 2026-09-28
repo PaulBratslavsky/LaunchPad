@@ -20,11 +20,16 @@ export default function Loading() {
 
           {/* Content */}
           <div className="space-y-4">
-            {['w-full', 'w-11/12', 'w-10/12', 'w-full', 'w-9/12', 'w-11/12'].map(
-              (width, index) => (
-                <SkeletonBlock key={index} className={`h-4 ${width}`} />
-              )
-            )}
+            {[
+              'w-full',
+              'w-11/12',
+              'w-10/12',
+              'w-full',
+              'w-9/12',
+              'w-11/12',
+            ].map((width, index) => (
+              <SkeletonBlock key={index} className={`h-4 ${width}`} />
+            ))}
           </div>
         </article>
       </Container>
