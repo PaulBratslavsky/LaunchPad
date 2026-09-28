@@ -1,8 +1,6 @@
 import type { Viewport } from 'next';
 import { Suspense } from 'react';
 
-import { i18n } from '@/i18n.config';
-
 import './globals.css';
 
 import { SlugProvider } from '@/app/context/SlugContext';
@@ -14,10 +12,6 @@ export const viewport: Viewport = {
     { media: '(prefers-color-scheme: dark)', color: '#06b6d4' },
   ],
 };
-
-export async function generateStaticParams() {
-  return i18n.locales.map((locale) => ({ lang: locale }));
-}
 
 function RootLoading() {
   return (
