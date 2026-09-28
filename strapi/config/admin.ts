@@ -34,7 +34,7 @@ export default ({ env }) => {
       'http://localhost:3001', // nuxt
       'http://localhost:3002', // tanstack
       'http://localhost:4321', // astro
-    ]),
+    ])
   );
   const previewSecret = env('PREVIEW_SECRET');
 

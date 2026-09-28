@@ -23,12 +23,12 @@
 
 ### Per-frontend facts (do not guess these)
 
-| Frontend | Dir | Port | Strapi URL key | Extra secrets |
-|---|---|---|---|---|
-| Next | `next/` | 3000 | `NEXT_PUBLIC_API_URL` | — |
-| Astro | `astro/` | 4321 | `STRAPI_URL` | `SESSION_SECRET` |
-| Nuxt | `nuxt/` | 3001 | `STRAPI_URL` | `SESSION_SECRET` |
-| TanStack | `tanstack/` | 3002 | `VITE_STRAPI_URL` | `SESSION_SECRET`, `REVALIDATE_SECRET` |
+| Frontend | Dir         | Port | Strapi URL key        | Extra secrets                         |
+| -------- | ----------- | ---- | --------------------- | ------------------------------------- |
+| Next     | `next/`     | 3000 | `NEXT_PUBLIC_API_URL` | —                                     |
+| Astro    | `astro/`    | 4321 | `STRAPI_URL`          | `SESSION_SECRET`                      |
+| Nuxt     | `nuxt/`     | 3001 | `STRAPI_URL`          | `SESSION_SECRET`                      |
+| TanStack | `tanstack/` | 3002 | `VITE_STRAPI_URL`     | `SESSION_SECRET`, `REVALIDATE_SECRET` |
 
 The Strapi URL key differs by framework because Next requires the
 `NEXT_PUBLIC_` prefix and Vite requires `VITE_`. This is not
@@ -50,26 +50,26 @@ proves the check is real.
 
 **Created on the groundwork branch:**
 
-| File | Responsibility |
-|---|---|
-| `scripts/frontends.mts` | The registry. Declares all four frontends, filters to those present on disk. |
-| `scripts/env.mts` | Read/write `.env` values, generate secrets, reconcile `PREVIEW_SECRET`, validate. |
-| `scripts/paths.mts` | Repo-root resolution shared by the other scripts. |
-| `scripts/setup.mts` | Install deps and create `.env` files for Strapi and every present frontend. |
-| `scripts/dev.mts` | Start Strapi plus one named frontend. |
-| `scripts/use.mts` | Set or print the preview target. |
-| `scripts/check-env.mts` | Report environment consistency. |
+| File                    | Responsibility                                                                    |
+| ----------------------- | --------------------------------------------------------------------------------- |
+| `scripts/frontends.mts` | The registry. Declares all four frontends, filters to those present on disk.      |
+| `scripts/env.mts`       | Read/write `.env` values, generate secrets, reconcile `PREVIEW_SECRET`, validate. |
+| `scripts/paths.mts`     | Repo-root resolution shared by the other scripts.                                 |
+| `scripts/setup.mts`     | Install deps and create `.env` files for Strapi and every present frontend.       |
+| `scripts/dev.mts`       | Start Strapi plus one named frontend.                                             |
+| `scripts/use.mts`       | Set or print the preview target.                                                  |
+| `scripts/check-env.mts` | Report environment consistency.                                                   |
 
 **Modified on the groundwork branch:**
 
-| File | Change |
-|---|---|
-| `package.json` | New scripts; add `tsx`; drop `setup:next`/`setup:strapi`. |
-| `strapi/config/admin.ts` | `allowedOrigins` lists all four frontends. |
-| `strapi/config/env/production/admin.ts` | Same change. |
-| `AGENTS.md` | Rewrite for four frontends. |
-| `README.md` | Rewrite for four frontends. |
-| `scripts/copy-env.mts` | Deleted — superseded by `scripts/env.mts`. |
+| File                                    | Change                                                    |
+| --------------------------------------- | --------------------------------------------------------- |
+| `package.json`                          | New scripts; add `tsx`; drop `setup:next`/`setup:strapi`. |
+| `strapi/config/admin.ts`                | `allowedOrigins` lists all four frontends.                |
+| `strapi/config/env/production/admin.ts` | Same change.                                              |
+| `AGENTS.md`                             | Rewrite for four frontends.                               |
+| `README.md`                             | Rewrite for four frontends.                               |
+| `scripts/copy-env.mts`                  | Deleted — superseded by `scripts/env.mts`.                |
 
 **Created on framework branches:** `astro/`, `nuxt/`, `tanstack/`.
 
@@ -96,10 +96,12 @@ git checkout -b chore/multi-framework-groundwork
 ### Task 1: Frontend registry
 
 **Files:**
+
 - Create: `scripts/paths.mts`
 - Create: `scripts/frontends.mts`
 
 **Interfaces:**
+
 - Consumes: nothing.
 - Produces:
   - `rootDir: string`, `backendDir: string` (from `paths.mts`)
@@ -126,7 +128,7 @@ import { fileURLToPath } from 'url';
 /** Repo root, resolved from this file's location rather than cwd. */
 export const rootDir = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
-  '..',
+  '..'
 );
 
 export const backendDir = path.join(rootDir, 'strapi');
@@ -159,7 +161,7 @@ const define = (
   name: string,
   label: string,
   port: number,
-  strapiUrlKey: string,
+  strapiUrlKey: string
 ): Frontend => ({
   name,
   label,
@@ -182,7 +184,7 @@ export const FRONTENDS: Frontend[] = [
  */
 export function presentFrontends(): Frontend[] {
   return FRONTENDS.filter((f) =>
-    fs.existsSync(path.join(f.dir, 'package.json')),
+    fs.existsSync(path.join(f.dir, 'package.json'))
   );
 }
 
@@ -232,9 +234,11 @@ the registry can be complete before the directories land."
 ### Task 2: Environment module
 
 **Files:**
+
 - Create: `scripts/env.mts`
 
 **Interfaces:**
+
 - Consumes: `backendDir` (paths), `Frontend`, `presentFrontends`, `frontendUrl`, `getFrontend` (frontends)
 - Produces:
   - `generateSecret(): string`
@@ -413,7 +417,10 @@ export function checkEnv(): CheckResult {
   const backendEnv = envPathFor(backendDir);
 
   if (!fs.existsSync(backendEnv)) {
-    return { ok: false, problems: ['strapi/.env is missing — run `yarn setup`'] };
+    return {
+      ok: false,
+      problems: ['strapi/.env is missing — run `yarn setup`'],
+    };
   }
 
   for (const key of ['PREVIEW_SECRET', 'APP_KEYS', 'ADMIN_JWT_SECRET']) {
@@ -422,7 +429,7 @@ export function checkEnv(): CheckResult {
       problems.push(`strapi/.env: ${key} is missing or empty`);
     } else if (!isReal(value)) {
       problems.push(
-        `strapi/.env: ${key} is still the placeholder "${value}" — replace it with a real value`,
+        `strapi/.env: ${key} is still the placeholder "${value}" — replace it with a real value`
       );
     }
   }
@@ -447,7 +454,7 @@ export function checkEnv(): CheckResult {
       problems.push(`${f.name}/.env: PREVIEW_SECRET is missing or empty`);
     } else if (backendPreview && preview !== backendPreview) {
       problems.push(
-        `${f.name}/.env: PREVIEW_SECRET differs from strapi/.env — Strapi will sign preview URLs this frontend rejects with 401. Run \`yarn setup\` to sync them.`,
+        `${f.name}/.env: PREVIEW_SECRET differs from strapi/.env — Strapi will sign preview URLs this frontend rejects with 401. Run \`yarn setup\` to sync them.`
       );
     }
 
@@ -455,7 +462,7 @@ export function checkEnv(): CheckResult {
     const session = readEnvValue(envPath, 'SESSION_SECRET');
     if (session && session.length < 32) {
       problems.push(
-        `${f.name}/.env: SESSION_SECRET must be at least 32 characters (currently ${session.length})`,
+        `${f.name}/.env: SESSION_SECRET must be at least 32 characters (currently ${session.length})`
       );
     }
   }
@@ -463,9 +470,11 @@ export function checkEnv(): CheckResult {
   // CLIENT_URL must name a frontend that is actually checked out.
   const clientUrl = readEnvValue(backendEnv, 'CLIENT_URL');
   if (clientUrl && !present.some((f) => frontendUrl(f) === clientUrl)) {
-    const known = present.map((f) => `${f.name} (${frontendUrl(f)})`).join(', ');
+    const known = present
+      .map((f) => `${f.name} (${frontendUrl(f)})`)
+      .join(', ');
     problems.push(
-      `strapi/.env: CLIENT_URL is ${clientUrl}, which is not a checked-out frontend. Known: ${known}. Run \`yarn use <framework>\`.`,
+      `strapi/.env: CLIENT_URL is ${clientUrl}, which is not a checked-out frontend. Known: ${known}. Run \`yarn use <framework>\`.`
     );
   }
 
@@ -480,7 +489,7 @@ export function reportCheck(result: CheckResult): void {
   console.error('\n✖ Environment problems:\n');
   for (const problem of result.problems) console.error(`  • ${problem}`);
   console.error(
-    `\nChecked against ${path.relative(process.cwd(), rootDir) || '.'}\n`,
+    `\nChecked against ${path.relative(process.cwd(), rootDir) || '.'}\n`
   );
 }
 ```
@@ -504,8 +513,7 @@ node --import tsx ./scripts/check-env.mts; echo "exit=$?"
 Expected: `✓ Environment looks consistent.` and `exit=0`.
 
 If `strapi/.env` or `next/.env` do not exist yet on this machine, the
-expected output is instead a specific `... is missing — run \`yarn setup\``
-line and `exit=1`. Either is a pass for this step; a stack trace is not.
+expected output is instead a specific `... is missing — run \`yarn setup\``line and`exit=1`. Either is a pass for this step; a stack trace is not.
 
 - [ ] **Step 5: Prove the drift check actually fires**
 
@@ -535,6 +543,7 @@ framework-mandated Strapi URL key."
 ### Task 3: Setup, dev, and use scripts
 
 **Files:**
+
 - Create: `scripts/setup.mts`
 - Create: `scripts/dev.mts`
 - Create: `scripts/use.mts`
@@ -542,6 +551,7 @@ framework-mandated Strapi URL key."
 - Modify: `package.json`
 
 **Interfaces:**
+
 - Consumes: everything produced by Tasks 1 and 2.
 - Produces: the root script surface — `yarn setup`, `yarn dev`, `yarn dev:<fw>`, `yarn use`, `yarn check:env`.
 
@@ -584,10 +594,12 @@ if (!name) {
   const current = currentPreviewTarget();
   const match = FRONTENDS.find((f) => frontendUrl(f) === current);
   console.log(
-    `Preview target: ${match ? `${match.name} (${current})` : (current ?? 'not set')}`,
+    `Preview target: ${match ? `${match.name} (${current})` : (current ?? 'not set')}`
   );
   console.log(
-    `Available: ${presentFrontends().map((f) => f.name).join(', ')}`,
+    `Available: ${presentFrontends()
+      .map((f) => f.name)
+      .join(', ')}`
   );
   process.exit(0);
 }
@@ -603,9 +615,14 @@ if (await portInUse(1337)) {
 - [ ] **Step 3: Create `scripts/setup.mts`**
 
 ```ts
-import { backendDir } from './paths.mjs';
-import { checkEnv, ensureEnvFile, propagatePreviewSecret, reportCheck } from './env.mjs';
+import {
+  checkEnv,
+  ensureEnvFile,
+  propagatePreviewSecret,
+  reportCheck,
+} from './env.mjs';
 import { presentFrontends } from './frontends.mjs';
+import { backendDir } from './paths.mjs';
 import { run } from './run.mjs';
 
 /**
@@ -633,12 +650,16 @@ const result = checkEnv();
 reportCheck(result);
 
 if (!result.ok) {
-  console.error('Setup finished but the environment is inconsistent (see above).');
+  console.error(
+    'Setup finished but the environment is inconsistent (see above).'
+  );
   process.exit(1);
 }
 
 console.log(`
-Ready. Frontends checked out: ${presentFrontends().map((f) => f.name).join(', ')}
+Ready. Frontends checked out: ${presentFrontends()
+  .map((f) => f.name)
+  .join(', ')}
 
   yarn seed              import the demo content
   yarn dev               Strapi + Next      (default)
@@ -658,7 +679,7 @@ import { spawn } from 'child_process';
 export function run(
   command: string,
   args: string[],
-  options: { cwd?: string } = {},
+  options: { cwd?: string } = {}
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     const child = spawn(command, args, {
@@ -669,7 +690,8 @@ export function run(
     child.on('error', reject);
     child.on('close', (code) => {
       if (code === 0) resolve();
-      else reject(new Error(`${command} ${args.join(' ')} exited with ${code}`));
+      else
+        reject(new Error(`${command} ${args.join(' ')} exited with ${code}`));
     });
   });
 }
@@ -678,7 +700,12 @@ export function run(
 - [ ] **Step 5: Create `scripts/dev.mts`**
 
 ```ts
-import { checkEnv, readEnvValue, reportCheck, setPreviewTarget } from './env.mjs';
+import {
+  checkEnv,
+  readEnvValue,
+  reportCheck,
+  setPreviewTarget,
+} from './env.mjs';
 import { getFrontend } from './frontends.mjs';
 import { backendDir } from './paths.mjs';
 import { run } from './run.mjs';
@@ -713,7 +740,9 @@ if (!result.ok) {
 const url = setPreviewTarget(frontend.name);
 const strapiPort = readEnvValue(`${backendDir}/.env`, 'PORT') ?? '1337';
 
-console.log(`\nStarting Strapi on :${strapiPort} and ${frontend.label} on :${frontend.port}`);
+console.log(
+  `\nStarting Strapi on :${strapiPort} and ${frontend.label} on :${frontend.port}`
+);
 console.log(`Preview target: ${url}\n`);
 
 await run('yarn', [
@@ -804,10 +833,12 @@ Node version this repo targets."
 ### Task 4: Strapi allowed origins
 
 **Files:**
+
 - Modify: `strapi/config/admin.ts`
 - Modify: `strapi/config/env/production/admin.ts`
 
 **Interfaces:**
+
 - Consumes: nothing from earlier tasks — this is plain Strapi config.
 - Produces: `allowedOrigins` accepting all four frontends.
 
@@ -837,20 +868,20 @@ Expected: both show `allowedOrigins: [clientUrl],`.
 Replace the line `const clientUrl = env('CLIENT_URL');` with:
 
 ```ts
-  const clientUrl = env('CLIENT_URL', 'http://localhost:3000');
+const clientUrl = env('CLIENT_URL', 'http://localhost:3000');
 
-  // Every LaunchPad frontend, so preview works whichever one is running.
-  // CLIENT_URL still selects which one the admin's Preview button opens;
-  // Strapi's preview handler must return a single URL.
-  const allowedOrigins = Array.from(
-    new Set([
-      clientUrl,
-      'http://localhost:3000', // next
-      'http://localhost:3001', // nuxt
-      'http://localhost:3002', // tanstack
-      'http://localhost:4321', // astro
-    ]),
-  );
+// Every LaunchPad frontend, so preview works whichever one is running.
+// CLIENT_URL still selects which one the admin's Preview button opens;
+// Strapi's preview handler must return a single URL.
+const allowedOrigins = Array.from(
+  new Set([
+    clientUrl,
+    'http://localhost:3000', // next
+    'http://localhost:3001', // nuxt
+    'http://localhost:3002', // tanstack
+    'http://localhost:4321', // astro
+  ])
+);
 ```
 
 Then replace `allowedOrigins: [clientUrl],` with `allowedOrigins,`.
@@ -899,10 +930,12 @@ UUID stamp unrelated to this work.
 ### Task 5: Documentation
 
 **Files:**
+
 - Modify: `AGENTS.md`
 - Modify: `README.md`
 
 **Interfaces:**
+
 - Consumes: the script surface from Task 3.
 - Produces: docs matching the four-frontend shape.
 
@@ -956,7 +989,7 @@ Run commands from the correct directory.
 
 Replace the setup block with:
 
-```markdown
+````markdown
 Run once after cloning, from the repo root:
 
 ```sh
@@ -964,6 +997,7 @@ yarn install
 yarn setup            # installs strapi/ and every frontend, creates .env files
 yarn seed             # imports demo data into SQLite (191 entities, 115 assets)
 ```
+````
 
 `yarn setup` installs each directory in turn, creates any missing `.env`
 from its `.env.example`, and propagates `PREVIEW_SECRET` from `strapi/.env`
@@ -972,7 +1006,8 @@ alone and an already-configured preview secret is preserved.
 
 `yarn seed` is destructive — it wipes existing data before importing.
 Re-run it to reset to the demo baseline.
-```
+
+````
 
 - [ ] **Step 5: Replace the `## Next Changes` heading**
 
@@ -985,27 +1020,28 @@ feature parity: the full dynamic-zone block set, blog, products,
 CMS-driven pages, `en`/`fr` routing, draft preview, and authentication.
 A change to one frontend's rendering usually needs the same change in the
 other three.
-```
+````
 
 - [ ] **Step 6: Update `README.md` — structure and dev servers**
 
 Under `## 4. Start the Development Servers`, replace the body with:
 
-```markdown
+````markdown
 ```bash
 yarn dev             # Strapi + Next.js   (default)
 yarn dev:astro       # Strapi + Astro
 yarn dev:nuxt        # Strapi + Nuxt
 yarn dev:tanstack    # Strapi + TanStack Start
 ```
+````
 
-| Frontend | URL |
-|---|---|
-| Next.js | http://localhost:3000 |
-| Nuxt | http://localhost:3001 |
-| TanStack Start | http://localhost:3002 |
-| Astro | http://localhost:4321 |
-| Strapi admin | http://localhost:1337/admin |
+| Frontend       | URL                         |
+| -------------- | --------------------------- |
+| Next.js        | http://localhost:3000       |
+| Nuxt           | http://localhost:3001       |
+| TanStack Start | http://localhost:3002       |
+| Astro          | http://localhost:4321       |
+| Strapi admin   | http://localhost:1337/admin |
 
 ### Preview mode
 
@@ -1019,13 +1055,14 @@ yarn use             # show the current target
 
 `yarn dev:<framework>` sets this for you. Strapi reads the value at
 startup, so switching while it runs requires a restart.
-```
+
+````
 
 - [ ] **Step 7: Confirm no stale references remain**
 
 ```bash
 grep -n "setup:next\|setup:strapi\|copy-env\|ts-node" AGENTS.md README.md; echo "exit=$?"
-```
+````
 
 Expected: no output and `exit=1` (grep found nothing).
 
@@ -1054,10 +1091,12 @@ git checkout -b feat/astro-frontend
 ### Task 6: Astro frontend
 
 **Files:**
+
 - Create: `astro/` (contents of the Astro port's `client/`)
 - Modify: `.gitignore`
 
 **Interfaces:**
+
 - Consumes: `presentFrontends()` picks `astro/` up automatically once `astro/package.json` exists. No registry edit is needed — Task 1 already declared it.
 - Produces: a working `yarn dev:astro`.
 
@@ -1208,9 +1247,11 @@ git checkout -b feat/nuxt-frontend
 ### Task 7: Nuxt frontend
 
 **Files:**
+
 - Create: `nuxt/` (contents of the Nuxt port's `client/`)
 
 **Interfaces:**
+
 - Consumes: `presentFrontends()`, exactly as Task 6.
 - Produces: a working `yarn dev:nuxt`.
 
@@ -1344,9 +1385,11 @@ git checkout -b feat/tanstack-frontend
 ### Task 8: TanStack frontend
 
 **Files:**
+
 - Create: `tanstack/` (contents of the TanStack port's `client/`)
 
 **Interfaces:**
+
 - Consumes: `presentFrontends()`, exactly as Tasks 6 and 7.
 - Produces: a working `yarn dev:tanstack`.
 
@@ -1495,6 +1538,7 @@ port 3000 to 3002, since 3000 belongs to Next here."
 **Files:** none — this task only verifies and publishes.
 
 **Interfaces:**
+
 - Consumes: every preceding task.
 - Produces: a draft PR on `strapi/LaunchPad`.
 

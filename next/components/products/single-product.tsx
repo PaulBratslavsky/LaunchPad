@@ -25,9 +25,7 @@ export const SingleProduct = ({
   // Hold the *raw* Strapi URL so StrapiMedia can resolve it and decode the
   // visual-editing source mapping. Passing a pre-cleaned URL here would strip
   // the markers before StrapiMedia could read them.
-  const [activeThumbnail, setActiveThumbnail] = useState(
-    product.images[0].url
-  );
+  const [activeThumbnail, setActiveThumbnail] = useState(product.images[0].url);
   const { addToCart } = useCart();
 
   return (
