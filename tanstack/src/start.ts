@@ -5,6 +5,15 @@ import Negotiator from 'negotiator';
 import { i18n } from '@/i18n.config';
 import { resolveRedirect } from '@/lib/redirections';
 
+function isValidLanguageTag(tag: string): boolean {
+  try {
+    Intl.getCanonicalLocales(tag);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Detects the preferred locale from the request's Accept-Language header.
  * Ported from launchpad/next/proxy.ts.
@@ -15,14 +24,15 @@ function getLocale(headers: Headers): string {
     negotiatorHeaders[key] = value;
   });
 
-  const languages = new Negotiator({ headers: negotiatorHeaders }).languages();
+  // Negotiator yields "*" when Accept-Language is missing, and passes through
+  // malformed tags like "en_US". matchLocale throws a RangeError on either, so
+  // drop them and let the remaining preferences (or the default) decide.
+  const languages = new Negotiator({ headers: negotiatorHeaders })
+    .languages()
+    .filter(isValidLanguageTag);
   const locales: ReadonlyArray<string> = i18n.locales;
 
-  try {
-    return matchLocale(languages, locales, i18n.defaultLocale);
-  } catch {
-    return i18n.defaultLocale;
-  }
+  return matchLocale(languages, locales, i18n.defaultLocale);
 }
 
 /**
