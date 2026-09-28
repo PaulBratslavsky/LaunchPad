@@ -4,6 +4,7 @@ docs
 .vscode
 .env
 .claude/settings.local.json
+.claude/worktrees/
 .pnp.*
 .yarn/*
 !.yarn/patches
