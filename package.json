@@ -4,7 +4,7 @@
   "description": "Next.js Launchpad Example powered by Strapi",
   "type": "module",
   "scripts": {
-    "prepare": "husky",
+    "postinstall": "husky",
     "setup": "node --import tsx ./scripts/setup.mts",
     "dev": "node --import tsx ./scripts/dev.mts next",
     "dev:astro": "node --import tsx ./scripts/dev.mts astro",
@@ -20,7 +20,7 @@
     "check:format": "prettier . --check --cache",
     "fix:format": "prettier . --write --cache",
     "fix": "yarn fix:format",
-    "lint-staged": "lint-staged"
+    "lint-staged": "lint-staged --concurrent false"
   },
   "dependencies": {
     "@types/node": "^22.5.2",
@@ -41,11 +41,11 @@
     "uuid": "^13.0.0"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,md,yml,yaml}": [
-      "yarn fix:format"
-    ],
     "next/**/*.{js,jsx,ts,tsx}": [
       "yarn --cwd next eslint --fix"
+    ],
+    "*.{js,jsx,ts,tsx,json,md,yml,yaml}": [
+      "prettier --write"
     ]
   },
   "packageManager": "yarn@4.5.0"
