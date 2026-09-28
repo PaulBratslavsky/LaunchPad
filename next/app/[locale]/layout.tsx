@@ -11,6 +11,7 @@ import { Footer } from '@/components/footer';
 import { Navbar } from '@/components/navbar';
 import { AIToast } from '@/components/toast';
 import { CartProvider } from '@/context/cart-context';
+import { i18n } from '@/i18n.config';
 import { generateMetadataObject } from '@/lib/shared/metadata';
 import { fetchSingleType } from '@/lib/strapi';
 import { cn } from '@/lib/utils';
@@ -21,6 +22,12 @@ const inter = Inter({
   display: 'swap',
   weight: ['400', '500', '600', '700', '800', '900'],
 });
+
+// Listing the locales makes `locale` known at build time for this segment and
+// its children, so awaiting it doesn't block prerendering.
+export async function generateStaticParams() {
+  return i18n.locales.map((locale) => ({ locale }));
+}
 
 // Default Global SEO for pages without them
 export async function generateMetadata({
