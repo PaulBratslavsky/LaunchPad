@@ -3,6 +3,16 @@ const nextConfig = {
   output: process.env.NEXT_OUTPUT || undefined,
   // Enable Next.js 16 cache components
   cacheComponents: true,
+  experimental: {
+    // Next 16.3 validates every route for instant navigation in dev by default.
+    // Content is fetched uncached on purpose in development and in draft mode
+    // (Strapi preview), so every route was reported as blocking. Validate only
+    // segments that opt in with `export const instant = true`. Dev-only; the
+    // build is unaffected.
+    instantInsights: {
+      validationLevel: 'manual-warning',
+    },
+  },
   turbopack: {
     root: process.cwd().replace('/next', ''),
   },
