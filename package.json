@@ -42,7 +42,7 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,md,yml,yaml}": [
-      "yarn fix:format"
+      "prettier --write"
     ],
     "next/**/*.{js,jsx,ts,tsx}": [
       "yarn --cwd next eslint --fix"
