@@ -21,7 +21,7 @@ if (packageJson.strapi && packageJson.strapi.uuid === 'LAUNCHPAD') {
 
   fs.writeFileSync(
     packageJsonPath,
-    JSON.stringify(packageJson, null, 2),
+    `${JSON.stringify(packageJson, null, 2)}\n`,
     'utf-8'
   );
 } else {
