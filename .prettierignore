@@ -20,10 +20,13 @@ strapi/database/
 strapi/types/generated/
 strapi/src/api/*/content-types/*/schema.json
 strapi/src/components/*/*.json
+strapi/.strapi/
+strapi/.strapi-updater.json
 
 # Next.js specific
 next/.next/
 next/out/
+next/next-env.d.ts
 
 # Astro specific
 astro/.astro/
